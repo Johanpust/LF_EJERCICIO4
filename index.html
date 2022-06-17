@@ -18,8 +18,7 @@
     <link rel="stylesheet" href="./dist/MarkerCluster.Default.css" />
     <script src="./dist/leaflet.markercluster-src.js"></script>
     <script src="./dist/leaflet.markercluster.js"></script>
-
-
+    
     <link rel="stylesheet" type="text/css" href="./Leaflet-MiniMap-master/dist/Control.MiniMap.min.css" />
     <script src="./Leaflet-MiniMap-master/dist/Control.MiniMap.min.js"></script>
 
@@ -58,7 +57,7 @@
             'opacity': 0.6
         };
 
-        function getColor(d) {
+        function getColorPaises(d) {
             return d > 100000000 ? '#800026' :
                 d > 50000000 ? '#BD0026' :
                     d > 20000000 ? '#E31A1C' :
@@ -71,7 +70,7 @@
 
         function style(feature) {
             return {
-                fillColor: getColor(feature.properties.pop_est),
+                fillColor: getColorPaises(feature.properties.pop_est),
                 weight: 2,
                 opacity: 1,
                 color: 'white',
@@ -80,7 +79,7 @@
             };
         }
 
-        function getColordepa(d) {
+        function getColorDepartamentos(d) {
             return d > 100000000000 ? '#131f12' :
                 d > 50000000000 ? '#23491f' :
                     d > 20000000000 ? '#3b7735' :
@@ -93,7 +92,7 @@
 
         function styledepa(feature) {
             return {
-                fillColor: getColordepa(feature.properties.SHAPE_AREA),
+                fillColor: getColorDepartamentos(feature.properties.SHAPE_AREA),
                 weight: 2,
                 opacity: 1,
                 color: 'white',
@@ -103,7 +102,7 @@
         }
 
 
-        function getColorCity(d) {
+        function getColorCiudades(d) {
             if (d == "S") {
                 d = "YELLOW";
             } else if (d == "N") {

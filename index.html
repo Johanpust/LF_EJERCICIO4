@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src=" https://unpkg.com/leaflet@1.6.0/dist/leaflet.js "></script>
+
+    <link rel="stylesheet" href=" https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+
+    <script type="text/javascript" src="ciudades.js"></script>
+    <script type="text/javascript" src="paises.js"></script>
+    <script type="text/javascript" src="departamento.js"></script>
+
+    <link rel="stylesheet" href="./dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="./dist/MarkerCluster.Default.css" />
+    <script src="./dist/leaflet.markercluster-src.js"></script>
+    <script src="./dist/leaflet.markercluster.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="./Leaflet-MiniMap-master/dist/Control.MiniMap.min.css" />
+    <script src="./Leaflet-MiniMap-master/dist/Control.MiniMap.min.js"></script>
+
+    <title>Ejercicio5</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 600px;
+            box-shadow: 5px 5px 5px #888;
+        }
+
+        .info {
+            padding: 20px 20px;
+            font: 16px/18px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgb(255, 0, 0);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .info h2 {
+            margin: 0 0 5px;
+            color: rgb(255, 0, 0);
+        }
+
+        .legend {
+            opacity: 0.7;
+        }
+    </style>
+
+    <script>
+        var countryStyle = {
+            'color': "#e12a2a",
+            'weight': 2,
+            'opacity': 0.6
+        };
+
+        function getColor(d) {
+            return d > 100000000 ? '#800026' :
+                d > 50000000 ? '#BD0026' :
+                    d > 20000000 ? '#E31A1C' :
+                        d > 10000000 ? '#FC4E2A' :
+                            d > 5000000 ? '#FD8D3C' :
+                                d > 2000000 ? '#FEB24C' :
+                                    d > 1000000 ? '#FED976' :
+                                        '#FFEDA0';
+        };
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.pop_est),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+        }
+
+        function getColordepa(d) {
+            return d > 100000000000 ? '#131f12' :
+                d > 50000000000 ? '#23491f' :
+                    d > 20000000000 ? '#3b7735' :
+                        d > 10000000000 ? '#5cb052' :
+                            d > 5000000000 ? '#72ce66' :
+                                d > 2000000000 ? '#99f18d' :
+                                    d > 1000000000 ? '#c5ebbf' :
+                                        '#def8d9';
+        };
+
+        function styledepa(feature) {
+            return {
+                fillColor: getColordepa(feature.properties.SHAPE_AREA),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+        }
+
+
+        function getColorCity(d) {
+            if (d == "S") {
+                d = "YELLOW";
+            } else if (d == "N") {
+                d = "GREEN";
+            } else {
+                d = "WHITE";
+            }
+            return d;
+        };
+
+
+
+        function popupCity(feature, layer) {
+            if (feature.properties && feature.properties.CIUDAD) {
+                layer.bindPopup(feature.properties.CIUDAD);
+            }
+        }
+
+
+        function popup(feature, layer) {
+            if (feature.properties && feature.properties.name) {
+                layer.bindPopup("<strong>País: </strong>"+feature.properties.name);
+            }
+        }
+        function popupdepa(feature, layer) {
+            if (feature.properties && feature.properties.COD_DANE) {
+                layer.bindPopup("<strong>Codigo Dane: </strong>"+feature.properties.COD_DANE);
+            }
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+
+    <div id='map'>
+
+    </div>
+
+    <script>
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+                + 'contributors',
+            maxZoom: 18
+        });
+
+        var map = L.map('map', {
+            center: [41.66, -4.72],
+            zoom: 3,
+            layers: osm,
+            scrollWheelZoom: true,
+        });
+
+        L.control.scale().addTo(map);
+        
+        var baseMaps = {
+            "OpenStreetMap": osm
+          
+        };
+
+        var paises = L.geoJson(paises, {
+            style: style,
+            onEachFeature: popup
+        }).addTo(map);
+
+        var departamentos = L.geoJson(departamento, {
+            style: styledepa,
+            onEachFeature: popupdepa
+        })
+
+        const colorcity = {
+            color: 'BLACK',
+            opacity: 0.75,
+            weight: 1,
+            fillColor: "#000",
+            fillOpacity: 0.6,
+            radius: 7
+        }
+
+        const markers = L.markerClusterGroup();
+
+        var ciudades=L.geoJson(ciudades,
+            {
+                pointToLayer: function (feature, latlng) {
+                    return markers.addLayer(L.circleMarker(latlng, colorcity))
+                },
+                onEachFeature: popupCity
+            })
+
+
+        map.addLayer(markers);
+
+        
+        var overlayMaps = {
+            "Paises": paises,
+            "Departamentos": departamentos,
+            "Ciudades": ciudades
+            
+        };
+
+        var title = L.control();
+        title.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info');
+            div.innerHTML +=
+                '<h2>Ejercicio 4 Leaflit</h2>Johan Puentes'; return div;
+        };
+        title.addTo(map);
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        var estilo_carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '©OpenStreetMap, ©CartoDB', subdomains: 'abcd', maxZoom: 24 });
+
+        var minimapa = new L.Control.MiniMap(estilo_carto,
+            {
+                toggleDisplay: true,
+                minimized: false,
+                position: "bottomleft"
+            }).addTo(map);
+        
+    </script>
+</body>
+
+</html>

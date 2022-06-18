@@ -12,7 +12,7 @@
 
     <script type="text/javascript" src="ciudades.js"></script>
     <script type="text/javascript" src="paises.js"></script>
-    <script type="text/javascript" src="departamento.js"></script>
+    <script type="text/javascript" src="departamentos.js"></script>
 
     <link rel="stylesheet" href="dist/MarkerCluster.css" />
     <link rel="stylesheet" href="dist/MarkerCluster.Default.css" />
@@ -115,19 +115,19 @@
 
 
 
-        function popupCity(feature, layer) {
+        function popupCiudades(feature, layer) {
             if (feature.properties && feature.properties.CIUDAD) {
                 layer.bindPopup(feature.properties.CIUDAD);
             }
         }
 
 
-        function popup(feature, layer) {
+        function popupPaises(feature, layer) {
             if (feature.properties && feature.properties.name) {
                 layer.bindPopup("<strong>País: </strong>"+feature.properties.name);
             }
         }
-        function popupdepa(feature, layer) {
+        function popupDepartamentos(feature, layer) {
             if (feature.properties && feature.properties.COD_DANE) {
                 layer.bindPopup("<strong>Codigo Dane: </strong>"+feature.properties.COD_DANE);
             }
@@ -167,12 +167,12 @@
 
         var paises = L.geoJson(paises, {
             style: style,
-            onEachFeature: popup
+            onEachFeature: popupPaises
         }).addTo(map);
 
-        var departamentos = L.geoJson(departamento, {
+        var departamentos = L.geoJson(departamentos, {
             style: styledepa,
-            onEachFeature: popupdepa
+            onEachFeature: popupDepartamentos
         })
 
         const colorcity = {
@@ -191,7 +191,7 @@
                 pointToLayer: function (feature, latlng) {
                     return markers.addLayer(L.circleMarker(latlng, colorcity))
                 },
-                onEachFeature: popupCity
+                onEachFeature: popupCiudades
             })
 
 

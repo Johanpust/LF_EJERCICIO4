@@ -22,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="Leaflet-MiniMap-master/dist/Control.MiniMap.min.css" />
     <script src="Leaflet-MiniMap-master/dist/Control.MiniMap.min.js"></script>
 
-        <title>Ejercicio4</title>
+    <title>Ejercicio5</title>
     <style>
         #map {
             width: 100%;
@@ -57,7 +57,7 @@
             'opacity': 0.6
         };
 
-        function getColor(d) {
+        function getColorPaises(d) {
             return d > 100000000 ? '#800026' :
                 d > 50000000 ? '#BD0026' :
                     d > 20000000 ? '#E31A1C' :
@@ -70,7 +70,7 @@
 
         function style(feature) {
             return {
-                fillColor: getColor(feature.properties.pop_est),
+                fillColor: getColorPaises(feature.properties.pop_est),
                 weight: 2,
                 opacity: 1,
                 color: 'white',
@@ -79,7 +79,7 @@
             };
         }
 
-        function getColordepa(d) {
+        function getColorDepartamentos(d) {
             return d > 100000000000 ? '#131f12' :
                 d > 50000000000 ? '#23491f' :
                     d > 20000000000 ? '#3b7735' :
@@ -92,7 +92,7 @@
 
         function styledepa(feature) {
             return {
-                fillColor: getColordepa(feature.properties.SHAPE_AREA),
+                fillColor: getColorDepartamentos(feature.properties.SHAPE_AREA),
                 weight: 2,
                 opacity: 1,
                 color: 'white',
@@ -102,7 +102,7 @@
         }
 
 
-        function getColorCity(d) {
+        function getColorCiudades(d) {
             if (d == "S") {
                 d = "YELLOW";
             } else if (d == "N") {
@@ -115,19 +115,19 @@
 
 
 
-        function popupCity(feature, layer) {
+        function popupCiudades(feature, layer) {
             if (feature.properties && feature.properties.CIUDAD) {
                 layer.bindPopup(feature.properties.CIUDAD);
             }
         }
 
 
-        function popup(feature, layer) {
+        function popupPaises(feature, layer) {
             if (feature.properties && feature.properties.name) {
                 layer.bindPopup("<strong>País: </strong>"+feature.properties.name);
             }
         }
-        function popupdepa(feature, layer) {
+        function popupDepartamentos(feature, layer) {
             if (feature.properties && feature.properties.COD_DANE) {
                 layer.bindPopup("<strong>Codigo Dane: </strong>"+feature.properties.COD_DANE);
             }
@@ -167,12 +167,12 @@
 
         var paises = L.geoJson(paises, {
             style: style,
-            onEachFeature: popup
+            onEachFeature: popupPaises
         }).addTo(map);
 
         var departamentos = L.geoJson(departamentos, {
             style: styledepa,
-            onEachFeature: popupdepa
+            onEachFeature: popupDepartamentos
         })
 
         const colorcity = {
@@ -191,7 +191,7 @@
                 pointToLayer: function (feature, latlng) {
                     return markers.addLayer(L.circleMarker(latlng, colorcity))
                 },
-                onEachFeature: popupCity
+                onEachFeature: popupCiudades
             })
 
 
